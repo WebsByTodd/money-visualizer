@@ -8,7 +8,10 @@ import { useMilestones } from "./Milestones/useMilestones";
 function App() {
   const rateState = useRate();
   const timerState = useTimer();
-  const milestoneState = useMilestones();
+  const milestoneState = useMilestones({
+    rate: rateState.rate,
+    elapsedTime: timerState.elapsedTime,
+  });
 
   return (
     <>

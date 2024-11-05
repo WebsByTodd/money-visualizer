@@ -1,7 +1,11 @@
 import { useState } from "react";
-import { MilestoneState } from "./useMilestones";
+import { MilestonesState } from "./useMilestones";
 
-export function MilestoneList({ milestones, addMilestone }: MilestoneState) {
+export function MilestoneList({
+  milestones,
+  addMilestone,
+  deleteAllMilestones,
+}: MilestonesState) {
   const [name, setName] = useState<string>("");
   const [amount, setAmount] = useState<number>(0);
   function handleAddSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -18,7 +22,8 @@ export function MilestoneList({ milestones, addMilestone }: MilestoneState) {
     <>
       {milestones.map((milestone) => (
         <div key={milestone.name}>
-          <strong>{milestone.name}</strong>: {milestone.amount}
+          <strong>{milestone.name}</strong>: {milestone.amount} /{" "}
+          {milestone.progress}
         </div>
       ))}
       <form onSubmit={handleAddSubmit}>
@@ -35,6 +40,7 @@ export function MilestoneList({ milestones, addMilestone }: MilestoneState) {
         />
         <button type="submit">Add Milestone</button>
       </form>
+      <button onClick={deleteAllMilestones}>Reset milestones</button>
     </>
   );
 }
