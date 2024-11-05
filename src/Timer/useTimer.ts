@@ -3,7 +3,15 @@ import { useState, useEffect } from "react";
 const ELAPSED_TIME_KEY = "elapsedTime";
 const TIMER_START_KEY = "timerStartedAt";
 
-export function Timer() {
+interface Timer {
+  elapsedTime: number;
+  isRunning: boolean;
+  startTimer: () => void;
+  stopTimer: () => void;
+  resetTimer: () => void;
+}
+
+export function useTimer(): Timer {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [elapsedTime, setElapsedTime] = useState(() => {
     // Initialize elapsed time from localStorage, or start at 0 if no value is stored
@@ -66,28 +74,5 @@ export function Timer() {
     setIsRunning(false);
   };
 
-  return (
-    <div>
-      <h1>Timer</h1>
-      <p>{formatTime(elapsedTime)}</p>
-      <button onClick={startTimer} disabled={isRunning}>
-        Start
-      </button>
-      <button onClick={stopTimer} disabled={!isRunning}>
-        Stop
-      </button>
-      <button onClick={resetTimer}>Reset</button>
-    </div>
-  );
-}
-
-// Format elapsed time in hh:mm:ss
-function formatTime(time: number) {
-  const totalSeconds = Math.floor(time / 1000);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-  return `${hours.toString().padStart(2, "0")}:${minutes
-    .toString()
-    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  return { elapsedTime, isRunning, startTimer, stopTimer, resetTimer };
 }
