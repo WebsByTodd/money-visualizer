@@ -1,9 +1,12 @@
-import { useTimer } from "./useTimer";
+import { TimerState } from "./useTimer";
 
-export function Timer() {
-  const { elapsedTime, isRunning, startTimer, stopTimer, resetTimer } =
-    useTimer();
-
+export function Timer({
+  elapsedTime,
+  isRunning,
+  startTimer,
+  stopTimer,
+  resetTimer,
+}: TimerState) {
   return (
     <div>
       <h1>Timer</h1>

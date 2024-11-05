@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 const ELAPSED_TIME_KEY = "elapsedTime";
 const TIMER_START_KEY = "timerStartedAt";
 
-interface Timer {
+export interface TimerState {
   elapsedTime: number;
   isRunning: boolean;
   startTimer: () => void;
@@ -11,7 +11,7 @@ interface Timer {
   resetTimer: () => void;
 }
 
-export function useTimer(): Timer {
+export function useTimer(): TimerState {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [elapsedTime, setElapsedTime] = useState(() => {
     // Initialize elapsed time from localStorage, or start at 0 if no value is stored
