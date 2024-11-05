@@ -34,6 +34,7 @@ export function useMilestones({
         m.progress = Math.round(m.amount * 100) / 100;
       } else {
         m.progress = Math.round(totalLeft * 100) / 100;
+        totalLeft = 0;
       }
       updatedMilestones.push(m);
     }
