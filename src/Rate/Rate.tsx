@@ -1,16 +1,12 @@
 import React, { useState } from "react";
-import { ReactState } from "./types";
+import { RateState } from "./useRate";
 
-interface RateProps {
-  rateState: ReactState<number>;
-}
-export function Rate({ rateState }: RateProps) {
-  const [rate, setRate] = rateState;
+export function Rate({ rate, updateRate }: RateState) {
   const [rateInput, setRateInput] = useState<string>(rate.toString());
 
   function handleRateSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setRate(parseInt(rateInput));
+    updateRate(parseInt(rateInput));
   }
 
   function handleRateFocus(e: React.FocusEvent<HTMLInputElement>) {

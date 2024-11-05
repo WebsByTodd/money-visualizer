@@ -1,15 +1,15 @@
-import { useState } from "react";
-import { Rate } from "./Rate";
+import { Rate } from "./Rate/Rate";
 import { Timer } from "./Timer/Timer";
 import { useTimer } from "./Timer/useTimer";
+import { useRate } from "./Rate/useRate";
 
 function App() {
-  const rateState = useState<number>(0);
+  const rateState = useRate();
   const timerState = useTimer();
 
   return (
     <>
-      <Rate rateState={rateState} />
+      <Rate {...rateState} />
       <Timer {...timerState} />
     </>
   );
