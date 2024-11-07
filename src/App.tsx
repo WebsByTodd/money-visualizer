@@ -1,9 +1,9 @@
-import { Rate } from "./Rate/Rate";
-import { Timer } from "./Timer/Timer";
-import { useTimer } from "./Timer/useTimer";
-import { useRate } from "./Rate/useRate";
 import { MilestoneList } from "./Milestones/MilestoneList";
 import { useMilestones } from "./Milestones/useMilestones";
+import { Rate } from "./Rate/Rate";
+import { useRate } from "./Rate/useRate";
+import { Timer } from "./Timer/Timer";
+import { useTimer } from "./Timer/useTimer";
 
 function App() {
   const rateState = useRate();
@@ -15,9 +15,9 @@ function App() {
 
   return (
     <>
+      <MilestoneList {...milestoneState} />
       <Rate {...rateState} />
       <Timer {...timerState} />
-      <MilestoneList {...milestoneState} />
     </>
   );
 }

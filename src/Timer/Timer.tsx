@@ -1,6 +1,6 @@
 import clsx from "clsx/lite";
-import { TimerState } from "./useTimer";
 import { useState } from "react";
+import { TimerState } from "./useTimer";
 
 export function Timer({
   totalElapsedTime,
@@ -28,10 +28,13 @@ export function Timer({
   );
 
   return (
-    <div>
-      <h1>Total Time</h1>
+    <div className={clsx("flex", "flex-col", "items-start", "gap-2")}>
+      <span className={clsx("bg-blue-400", "p-2")}>
+        <span className={clsx("text-white")}>Hours worked</span>
+      </span>
       <div className={clsx("flex")}>
         <input
+          className={clsx("block", "w-[20px]")}
           type="text"
           value={totalHoursInput}
           onChange={(e) => setTotalHoursInput(e.target.value)}
@@ -42,6 +45,7 @@ export function Timer({
         />
         <span>:</span>
         <input
+          className={clsx("block", "w-[20px]")}
           type="text"
           value={totalMinutesInput}
           onChange={(e) => setTotalMinutesInput(e.target.value)}
@@ -51,9 +55,12 @@ export function Timer({
           }}
         />
       </div>
-      <h1>Today</h1>
+      <span className={clsx("bg-blue-400", "p-2")}>
+        <span className={clsx("text-white")}>Hours worked today</span>
+      </span>
       <div className={clsx("flex")}>
         <input
+          className={clsx("block", "w-[20px]")}
           type="text"
           value={dailyHoursInput}
           onChange={(e) => setDailyHoursInput(e.target.value)}
@@ -64,6 +71,7 @@ export function Timer({
         />
         <span>:</span>
         <input
+          className={clsx("block", "w-[20px]")}
           type="text"
           value={dailyMinutesInput}
           onChange={(e) => setDailyMinutesInput(e.target.value)}
@@ -74,13 +82,73 @@ export function Timer({
         />
         <span>:{dailyElapsed.ss}</span>
       </div>
-      <button onClick={startTimer} disabled={isRunning}>
-        Start
-      </button>
-      <button onClick={stopTimer} disabled={!isRunning}>
-        Stop
-      </button>
-      <button onClick={resetTimer}>Reset</button>
+      <div className={clsx("flex", "gap-2")}>
+        <button
+          className={clsx(
+            "text-white",
+            "bg-blue-700",
+            "hover:bg-blue-800",
+            "focus:ring-4",
+            "focus:outline-none",
+            "focus:ring-blue-300",
+            "font-medium",
+            "rounded-lg",
+            "text-sm",
+            "w-full",
+            "sm:w-auto",
+            "px-5",
+            "py-2.5",
+            "text-center"
+          )}
+          onClick={startTimer}
+          disabled={isRunning}
+        >
+          Start
+        </button>
+        <button
+          className={clsx(
+            "text-white",
+            "bg-blue-700",
+            "hover:bg-blue-800",
+            "focus:ring-4",
+            "focus:outline-none",
+            "focus:ring-blue-300",
+            "font-medium",
+            "rounded-lg",
+            "text-sm",
+            "w-full",
+            "sm:w-auto",
+            "px-5",
+            "py-2.5",
+            "text-center"
+          )}
+          onClick={stopTimer}
+          disabled={!isRunning}
+        >
+          Stop
+        </button>
+        <button
+          className={clsx(
+            "text-white",
+            "bg-blue-700",
+            "hover:bg-blue-800",
+            "focus:ring-4",
+            "focus:outline-none",
+            "focus:ring-blue-300",
+            "font-medium",
+            "rounded-lg",
+            "text-sm",
+            "w-full",
+            "sm:w-auto",
+            "px-5",
+            "py-2.5",
+            "text-center"
+          )}
+          onClick={resetTimer}
+        >
+          Reset
+        </button>
+      </div>
     </div>
   );
 }
