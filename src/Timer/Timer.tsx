@@ -1,7 +1,8 @@
 import { TimerState } from "./useTimer";
 
 export function Timer({
-  elapsedTime,
+  totalElapsedTime,
+  dailyElapsedTime,
   isRunning,
   startTimer,
   stopTimer,
@@ -9,8 +10,10 @@ export function Timer({
 }: TimerState) {
   return (
     <div>
-      <h1>Timer</h1>
-      <p>{formatTime(elapsedTime)}</p>
+      <h1>Total Time</h1>
+      <p>{formatTime(totalElapsedTime)}</p>
+      <h1>Today</h1>
+      <p>{formatTime(dailyElapsedTime)}</p>
       <button onClick={startTimer} disabled={isRunning}>
         Start
       </button>

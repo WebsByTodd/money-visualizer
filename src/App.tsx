@@ -10,7 +10,7 @@ function App() {
   const timerState = useTimer();
   const milestoneState = useMilestones({
     rate: rateState.rate,
-    elapsedTime: timerState.elapsedTime,
+    elapsedTime: timerState.totalElapsedTime,
   });
 
   return (

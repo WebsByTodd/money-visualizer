@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 
-const ELAPSED_TIME_KEY = "elapsedTime";
+const TOTAL_ELAPSED_TIME_KEY = "totalElapsedTime";
 const TIMER_START_KEY = "timerStartedAt";
+const DAILY_ELAPSED_TIME_KEY = "dailyElapsedTime";
+const LAST_UPDATE_DATE_KEY = "lastUpdateDate";
 
 export interface TimerState {
-  elapsedTime: number;
+  dailyElapsedTime: number;
+  totalElapsedTime: number;
   isRunning: boolean;
   startTimer: () => void;
   stopTimer: () => void;
@@ -13,21 +16,39 @@ export interface TimerState {
 
 export function useTimer(): TimerState {
   const [isRunning, setIsRunning] = useState<boolean>(false);
-  const [elapsedTime, setElapsedTime] = useState(() => {
+  const [totalElapsedTime, setTotalElapsedTime] = useState(() => {
     // Initialize elapsed time from localStorage, or start at 0 if no value is stored
-    const storedElapsedTime = localStorage.getItem(ELAPSED_TIME_KEY);
+    const storedElapsedTime = localStorage.getItem(TOTAL_ELAPSED_TIME_KEY);
     return storedElapsedTime ? parseInt(storedElapsedTime) : 0;
+  });
+  const [dailyElapsedTime, setDailyElapsedTime] = useState(() => {
+    const storedDailyElapsedTime = localStorage.getItem(DAILY_ELAPSED_TIME_KEY);
+    const lastUpdateDate = localStorage.getItem(LAST_UPDATE_DATE_KEY);
+    const today = new Date().toDateString();
+
+    // Reset daily timer if the last update was on a different day
+    if (lastUpdateDate !== today) {
+      localStorage.setItem(LAST_UPDATE_DATE_KEY, today);
+      localStorage.setItem(DAILY_ELAPSED_TIME_KEY, "0");
+      return 0;
+    }
+    return storedDailyElapsedTime ? parseInt(storedDailyElapsedTime) : 0;
   });
 
   useEffect(() => {
     // Load the start time from localStorage
     const storedStartTime = localStorage.getItem(TIMER_START_KEY);
-    const storedElapsedTime = localStorage.getItem(ELAPSED_TIME_KEY);
+    const storedElapsedTime = localStorage.getItem(TOTAL_ELAPSED_TIME_KEY);
+    const storedDailyElapsedTime = localStorage.getItem(DAILY_ELAPSED_TIME_KEY);
 
     if (storedStartTime && !isRunning) {
       const elapsed = Date.now() - parseInt(storedStartTime);
-      setElapsedTime(
+      setTotalElapsedTime(
         elapsed + (storedElapsedTime ? parseInt(storedElapsedTime) : 0)
+      );
+      setDailyElapsedTime(
+        elapsed +
+          (storedDailyElapsedTime ? parseInt(storedDailyElapsedTime) : 0)
       );
       setIsRunning(true);
     }
@@ -39,12 +60,16 @@ export function useTimer(): TimerState {
         const start = localStorage.getItem(TIMER_START_KEY);
         if (start) {
           const newElapsed = Date.now() - parseInt(start);
-          setElapsedTime(
+          setTotalElapsedTime(
             newElapsed + (storedElapsedTime ? parseInt(storedElapsedTime) : 0)
+          );
+          setDailyElapsedTime(
+            newElapsed +
+              (storedDailyElapsedTime ? parseInt(storedDailyElapsedTime) : 0)
           );
         }
       }, 1000);
-    } else if (!isRunning && elapsedTime) {
+    } else if (!isRunning && totalElapsedTime) {
       clearInterval(interval);
     }
     return () => clearInterval(interval);
@@ -59,7 +84,8 @@ export function useTimer(): TimerState {
   const stopTimer = () => {
     if (!isRunning) return;
     localStorage.removeItem(TIMER_START_KEY);
-    localStorage.setItem(ELAPSED_TIME_KEY, elapsedTime.toString());
+    localStorage.setItem(TOTAL_ELAPSED_TIME_KEY, totalElapsedTime.toString());
+    localStorage.setItem(DAILY_ELAPSED_TIME_KEY, dailyElapsedTime.toString());
     setIsRunning(false);
   };
 
@@ -69,10 +95,19 @@ export function useTimer(): TimerState {
     );
     if (!confirmReset) return;
     localStorage.removeItem(TIMER_START_KEY);
-    localStorage.removeItem(ELAPSED_TIME_KEY);
-    setElapsedTime(0);
+    localStorage.removeItem(TOTAL_ELAPSED_TIME_KEY);
+    localStorage.removeItem(DAILY_ELAPSED_TIME_KEY);
+    setTotalElapsedTime(0);
+    setDailyElapsedTime(0);
     setIsRunning(false);
   };
 
-  return { elapsedTime, isRunning, startTimer, stopTimer, resetTimer };
+  return {
+    dailyElapsedTime,
+    totalElapsedTime,
+    isRunning,
+    startTimer,
+    stopTimer,
+    resetTimer,
+  };
 }
