@@ -12,6 +12,11 @@ export interface TimerState {
   startTimer: () => void;
   stopTimer: () => void;
   resetTimer: () => void;
+  updateTime: (
+    type: "daily" | "total",
+    unit: "hours" | "minutes",
+    value: number
+  ) => void;
 }
 
 export function useTimer(): TimerState {
@@ -75,21 +80,21 @@ export function useTimer(): TimerState {
     return () => clearInterval(interval);
   }, [isRunning]);
 
-  const startTimer = () => {
+  function startTimer() {
     if (isRunning) return;
     localStorage.setItem(TIMER_START_KEY, Date.now().toString());
     setIsRunning(true);
-  };
+  }
 
-  const stopTimer = () => {
+  function stopTimer() {
     if (!isRunning) return;
     localStorage.removeItem(TIMER_START_KEY);
     localStorage.setItem(TOTAL_ELAPSED_TIME_KEY, totalElapsedTime.toString());
     localStorage.setItem(DAILY_ELAPSED_TIME_KEY, dailyElapsedTime.toString());
     setIsRunning(false);
-  };
+  }
 
-  const resetTimer = () => {
+  function resetTimer() {
     const confirmReset = window.confirm(
       "Are you sure you want to reset the timer?"
     );
@@ -97,10 +102,39 @@ export function useTimer(): TimerState {
     localStorage.removeItem(TIMER_START_KEY);
     localStorage.removeItem(TOTAL_ELAPSED_TIME_KEY);
     localStorage.removeItem(DAILY_ELAPSED_TIME_KEY);
+    localStorage.removeItem(LAST_UPDATE_DATE_KEY);
     setTotalElapsedTime(0);
     setDailyElapsedTime(0);
     setIsRunning(false);
-  };
+  }
+
+  function updateTime(
+    type: "daily" | "total",
+    unit: "hours" | "minutes",
+    value: number
+  ) {
+    // Convert hours or minutes to milliseconds
+    const multiplier = unit === "hours" ? 60 * 60 * 1000 : 60 * 1000;
+    const adjustedValue = value * multiplier;
+
+    if (type === "daily") {
+      const updatedDailyElapsedTime =
+        adjustedValue + (dailyElapsedTime % multiplier);
+      setDailyElapsedTime(updatedDailyElapsedTime);
+      localStorage.setItem(
+        DAILY_ELAPSED_TIME_KEY,
+        updatedDailyElapsedTime.toString()
+      );
+    } else {
+      const updatedTotalElapsedTime =
+        adjustedValue + (totalElapsedTime % multiplier);
+      setTotalElapsedTime(updatedTotalElapsedTime);
+      localStorage.setItem(
+        TOTAL_ELAPSED_TIME_KEY,
+        updatedTotalElapsedTime.toString()
+      );
+    }
+  }
 
   return {
     dailyElapsedTime,
@@ -109,5 +143,6 @@ export function useTimer(): TimerState {
     startTimer,
     stopTimer,
     resetTimer,
+    updateTime,
   };
 }
