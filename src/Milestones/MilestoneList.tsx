@@ -34,6 +34,7 @@ export function MilestoneList({
         {milestones.map((milestone, idx) => {
           const isLeft = idx % 2 === 0;
           const isLast = idx === milestones.length - 1;
+          const isDry = milestone.progress < milestone.amount;
           return (
             <Fragment key={milestone.name}>
               {isLeft && <PoolLow />}
@@ -53,7 +54,12 @@ export function MilestoneList({
                 </span>
               </div>
               {!isLeft && <PoolLow />}
-              {!isLast && (isLeft ? <StreamBendRight /> : <StreamBendLeft />)}
+              {!isLast &&
+                (isLeft ? (
+                  <StreamBendRight isDry={isDry} />
+                ) : (
+                  <StreamBendLeft isDry={isDry} />
+                ))}
             </Fragment>
           );
         })}
