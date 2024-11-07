@@ -1,6 +1,20 @@
 import clsx from "clsx/lite";
 
-export function PoolFull() {
+interface PoolProps {
+  state: "empty" | "low" | "full";
+}
+export function Pool({ state }: PoolProps) {
+  switch (state) {
+    case "full":
+      return <PoolFull />;
+    case "low":
+      return <PoolLow />;
+    case "empty":
+      return <PoolEmpty />;
+  }
+}
+
+function PoolFull() {
   return (
     <div
       className={clsx(
@@ -15,7 +29,7 @@ export function PoolFull() {
   );
 }
 
-export function PoolLow() {
+function PoolLow() {
   return (
     <div
       className={clsx(
@@ -39,5 +53,20 @@ export function PoolLow() {
         )}
       ></div>
     </div>
+  );
+}
+
+function PoolEmpty() {
+  return (
+    <div
+      className={clsx(
+        "w-[100px]",
+        "h-[100px]",
+        "bg-white",
+        "rounded-full",
+        "border",
+        "border-gray-400"
+      )}
+    />
   );
 }

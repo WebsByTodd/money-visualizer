@@ -7,7 +7,7 @@ import {
   StreamVertical,
 } from "../Tiles/Streams";
 import clsx from "clsx/lite";
-import { PoolFull, PoolLow } from "../Tiles/Pools";
+import { Pool } from "../Tiles/Pools";
 
 export function MilestoneList({
   milestones,
@@ -34,10 +34,18 @@ export function MilestoneList({
         {milestones.map((milestone, idx) => {
           const isLeft = idx % 2 === 0;
           const isLast = idx === milestones.length - 1;
-          const isDry = milestone.progress < milestone.amount;
+          let poolState: "empty" | "low" | "full";
+          if (milestone.progress === 0) {
+            poolState = "empty";
+          } else if (milestone.progress === milestone.amount) {
+            poolState = "full";
+          } else {
+            poolState = "low";
+          }
+          const isDry = poolState !== "full";
           return (
             <Fragment key={milestone.name}>
-              {isLeft && <PoolLow />}
+              {isLeft && <Pool state={poolState} />}
               <div
                 className={clsx(
                   "col-span-5",
@@ -53,7 +61,7 @@ export function MilestoneList({
                   {milestone.progress} / {milestone.amount}
                 </span>
               </div>
-              {!isLeft && <PoolLow />}
+              {!isLeft && <Pool state={poolState} />}
               {!isLast &&
                 (isLeft ? (
                   <StreamBendRight isDry={isDry} />
