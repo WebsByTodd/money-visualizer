@@ -1,5 +1,4 @@
 import clsx from "clsx/lite";
-import { useState } from "react";
 import { TimerState } from "./useTimer";
 
 export function Timer({
@@ -9,23 +8,9 @@ export function Timer({
   startTimer,
   stopTimer,
   resetTimer,
-  updateTime,
 }: TimerState) {
   const totalElapsed = formatTime(totalElapsedTime);
   const dailyElapsed = formatTime(dailyElapsedTime);
-
-  const [totalHoursInput, setTotalHoursInput] = useState<string>(
-    totalElapsed.hh
-  );
-  const [totalMinutesInput, setTotalMinutesInput] = useState<string>(
-    totalElapsed.mm
-  );
-  const [dailyHoursInput, setDailyHoursInput] = useState<string>(
-    dailyElapsed.hh
-  );
-  const [dailyMinutesInput, setDailyMinutesInput] = useState<string>(
-    dailyElapsed.mm
-  );
 
   return (
     <div className={clsx("flex", "flex-col", "items-start", "gap-2")}>
@@ -33,54 +18,17 @@ export function Timer({
         <span className={clsx("text-white")}>Hours worked</span>
       </span>
       <div className={clsx("flex")}>
-        <input
-          className={clsx("block", "w-[20px]")}
-          type="text"
-          value={totalHoursInput}
-          onChange={(e) => setTotalHoursInput(e.target.value)}
-          onBlur={() => {
-            updateTime("total", "hours", parseInt(totalHoursInput));
-            setTotalHoursInput((prev) => prev.padStart(2, "0"));
-          }}
-        />
-        <span>:</span>
-        <input
-          className={clsx("block", "w-[20px]")}
-          type="text"
-          value={totalMinutesInput}
-          onChange={(e) => setTotalMinutesInput(e.target.value)}
-          onBlur={() => {
-            updateTime("total", "minutes", parseInt(totalMinutesInput));
-            setTotalMinutesInput((prev) => prev.padStart(2, "0"));
-          }}
-        />
+        <span>
+          {totalElapsed.hh}:{totalElapsed.mm}:{totalElapsed.ss}
+        </span>
       </div>
       <span className={clsx("bg-blue-400", "p-2")}>
         <span className={clsx("text-white")}>Hours worked today</span>
       </span>
       <div className={clsx("flex")}>
-        <input
-          className={clsx("block", "w-[20px]")}
-          type="text"
-          value={dailyHoursInput}
-          onChange={(e) => setDailyHoursInput(e.target.value)}
-          onBlur={() => {
-            updateTime("daily", "hours", parseInt(dailyHoursInput));
-            setDailyHoursInput((prev) => prev.padStart(2, "0"));
-          }}
-        />
-        <span>:</span>
-        <input
-          className={clsx("block", "w-[20px]")}
-          type="text"
-          value={dailyMinutesInput}
-          onChange={(e) => setDailyMinutesInput(e.target.value)}
-          onBlur={() => {
-            updateTime("daily", "minutes", parseInt(dailyMinutesInput));
-            setDailyMinutesInput((prev) => prev.padStart(2, "0"));
-          }}
-        />
-        <span>:{dailyElapsed.ss}</span>
+        <span>
+          {dailyElapsed.hh}:{dailyElapsed.mm}:{dailyElapsed.ss}
+        </span>
       </div>
       <div className={clsx("flex", "gap-2")}>
         <button
@@ -160,10 +108,9 @@ interface Time {
   ss: string;
 }
 function formatTime(time: number): Time {
-  const totalSeconds = Math.floor(time / 1000);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
+  const hours = Math.floor(time / 3600);
+  const minutes = Math.floor((time % 3600) / 60);
+  const seconds = time % 60;
   return {
     hh: hours.toString().padStart(2, "0"),
     mm: minutes.toString().padStart(2, "0"),
