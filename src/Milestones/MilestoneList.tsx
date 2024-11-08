@@ -30,7 +30,7 @@ export function MilestoneList({
       <div className={clsx("grid", "grid-cols-3", "gap-0", "w-[300px]")}>
         <StreamVertical />
         <StreamBendLeft isDry={false} />
-        {/* {milestones.map((milestone, idx) => {
+        {milestones.map((milestone, idx) => {
           const isLeft = idx % 2 === 0;
           const isLast = idx === milestones.length - 1;
           let poolState: "empty" | "low" | "full";
@@ -47,7 +47,7 @@ export function MilestoneList({
               {isLeft && <Pool state={poolState} />}
               <div
                 className={clsx(
-                  "col-span-5",
+                  "col-span-2",
                   "flex",
                   "flex-col",
                   "justify-center",
@@ -69,7 +69,7 @@ export function MilestoneList({
                 ))}
             </Fragment>
           );
-        })} */}
+        })}
       </div>
 
       <div>
