@@ -1,72 +1,26 @@
 import clsx from "clsx/lite";
+import plantDead from "../assets/plant-dead.png";
+import plantLow from "../assets/plant-low.png";
+import plantMedium from "../assets/plant-medium.png";
+import plantHigh from "../assets/plant-high.png";
 
 interface PoolProps {
-  state: "empty" | "low" | "full";
+  state: "empty" | "low" | "medium" | "high";
 }
 export function Pool({ state }: PoolProps) {
-  switch (state) {
-    case "full":
-      return <PoolFull />;
-    case "low":
-      return <PoolLow />;
-    case "empty":
-      return <PoolEmpty />;
+  let src: string;
+  if (state === "empty") {
+    src = plantDead;
+  } else if (state === "low") {
+    src = plantLow;
+  } else if (state === "medium") {
+    src = plantMedium;
+  } else {
+    src = plantHigh;
   }
-}
-
-function PoolFull() {
   return (
-    <div
-      className={clsx(
-        "w-[100px]",
-        "h-[100px]",
-        "bg-blue-500",
-        "rounded-full",
-        "border",
-        "border-gray-400"
-      )}
-    />
-  );
-}
-
-function PoolLow() {
-  return (
-    <div
-      className={clsx(
-        "relative",
-        "w-[100px]",
-        "h-[100px]",
-        "bg-white",
-        "rounded-full",
-        "overflow-hidden",
-        "border",
-        "border-gray-400"
-      )}
-    >
-      <div
-        className={clsx(
-          "absolute",
-          "bottom-0",
-          "w-full",
-          "h-1/3",
-          "bg-blue-500"
-        )}
-      ></div>
+    <div className={clsx("w-[100px]", "h-[100px]")}>
+      <img src={src} className={clsx("w-full", "h-full")} />
     </div>
-  );
-}
-
-function PoolEmpty() {
-  return (
-    <div
-      className={clsx(
-        "w-[100px]",
-        "h-[100px]",
-        "bg-white",
-        "rounded-full",
-        "border",
-        "border-gray-400"
-      )}
-    />
   );
 }

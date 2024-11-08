@@ -33,15 +33,17 @@ export function MilestoneList({
         {milestones.map((milestone, idx) => {
           const isLeft = idx % 2 === 0;
           const isLast = idx === milestones.length - 1;
-          let poolState: "empty" | "low" | "full";
+          let poolState: "empty" | "low" | "medium" | "high";
           if (milestone.progress === 0) {
             poolState = "empty";
-          } else if (milestone.progress === milestone.amount) {
-            poolState = "full";
-          } else {
+          } else if (milestone.progress < milestone.amount / 2) {
             poolState = "low";
+          } else if (milestone.progress < milestone.amount) {
+            poolState = "medium";
+          } else {
+            poolState = "high";
           }
-          const isDry = poolState !== "full";
+          const isDry = poolState !== "high";
           return (
             <Fragment key={milestone.name}>
               {isLeft && <Pool state={poolState} />}
