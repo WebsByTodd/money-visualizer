@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const TOTAL_ELAPSED_TIME_KEY = "totalElapsedTime";
 const TIMER_START_KEY = "timerStartedAt";
@@ -30,7 +30,7 @@ export function useTimer(): TimerState {
       const newElapsed = Math.floor(Date.now() / 1000 - startTime);
       return parseInt(storedElapsedTime) + newElapsed;
     } else if (startTime) {
-      return Math.floor(Date.now() / 1000) - startTime;
+      return Math.floor(Date.now() / 1000 - startTime);
     } else {
       return storedElapsedTime ? parseInt(storedElapsedTime) : 0;
     }
@@ -43,28 +43,36 @@ export function useTimer(): TimerState {
       const newElapsed = Math.floor(Date.now() / 1000 - startTime);
       return parseInt(storedDailyElapsedTime) + newElapsed;
     } else if (startTime) {
-      return Math.floor(Date.now() / 1000) - startTime;
+      return Math.floor(Date.now() / 1000 - startTime);
     } else {
       return storedDailyElapsedTime ? parseInt(storedDailyElapsedTime) : 0;
     }
   });
 
-  useEffect(() => {
-    let interval: number | undefined;
-    const startTime = parseInt(localStorage.getItem(TIMER_START_KEY) || "0");
-    const initialTotalElapsedTime = totalElapsedTime;
-    const initialDailyElapsedTime = dailyElapsedTime;
+  const intervalRef = useRef<number | null>(null);
+  const lastUpdatedRef = useRef<number | null>(null);
 
+  useEffect(() => {
     if (isRunning) {
-      interval = setInterval(() => {
-        const newElapsed = Math.floor(Date.now() / 1000 - startTime);
-        setTotalElapsedTime(initialTotalElapsedTime + newElapsed);
-        setDailyElapsedTime(initialDailyElapsedTime + newElapsed);
-        console.log(newElapsed);
+      lastUpdatedRef.current = Math.floor(Date.now() / 1000);
+
+      intervalRef.current = setInterval(() => {
+        const now = Math.floor(Date.now() / 1000);
+        const newElapsed = now - (lastUpdatedRef.current || now);
+
+        setTotalElapsedTime((prev) => prev + newElapsed);
+        setDailyElapsedTime((prev) => prev + newElapsed);
+
+        lastUpdatedRef.current = now;
       }, 1000);
     }
 
-    return () => clearInterval(interval);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
   }, [isRunning]);
 
   function startTimer() {
@@ -76,9 +84,19 @@ export function useTimer(): TimerState {
 
   function stopTimer() {
     if (!isRunning) return;
+    const now = Math.floor(Date.now() / 1000);
+    const elapsed = now - (lastUpdatedRef.current || now);
+    setTotalElapsedTime((prev) => {
+      const newElapsed = prev + elapsed;
+      localStorage.setItem(TOTAL_ELAPSED_TIME_KEY, newElapsed.toString());
+      return newElapsed;
+    });
+    setDailyElapsedTime((prev) => {
+      const newElapsed = prev + elapsed;
+      localStorage.setItem(DAILY_ELAPSED_TIME_KEY, newElapsed.toString());
+      return newElapsed;
+    });
     localStorage.removeItem(TIMER_START_KEY);
-    localStorage.setItem(TOTAL_ELAPSED_TIME_KEY, totalElapsedTime.toString());
-    localStorage.setItem(DAILY_ELAPSED_TIME_KEY, dailyElapsedTime.toString());
     setIsRunning(false);
   }
 
