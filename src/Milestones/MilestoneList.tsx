@@ -2,7 +2,6 @@ import { Fragment, useState } from "react";
 import { MilestonesState } from "./useMilestones";
 import {
   StreamBendLeft,
-  StreamBendLeftHalf,
   StreamBendRight,
   StreamVertical,
 } from "../Tiles/Streams";
@@ -28,10 +27,10 @@ export function MilestoneList({
   }
   return (
     <>
-      <div className={clsx("grid", "grid-cols-6", "gap-0", "w-[600px]")}>
+      <div className={clsx("grid", "grid-cols-3", "gap-0", "w-[300px]")}>
         <StreamVertical />
-        <StreamBendLeftHalf />
-        {milestones.map((milestone, idx) => {
+        <StreamBendLeft isDry={false} />
+        {/* {milestones.map((milestone, idx) => {
           const isLeft = idx % 2 === 0;
           const isLast = idx === milestones.length - 1;
           let poolState: "empty" | "low" | "full";
@@ -70,7 +69,7 @@ export function MilestoneList({
                 ))}
             </Fragment>
           );
-        })}
+        })} */}
       </div>
 
       <div>

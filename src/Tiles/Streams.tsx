@@ -1,57 +1,13 @@
 import clsx from "clsx/lite";
+import waterStraight from "../assets/water-straight.png";
+import waterBend from "../assets/water-bend.png";
 
 export function StreamVertical() {
   return (
     <>
       <Space />
       <Space />
-      <Water />
-      <Space />
-      <Space />
-      <Space />
-    </>
-  );
-}
-
-export function StreamBendLeftHalf() {
-  return (
-    <>
-      <div
-        className={clsx(
-          "relative",
-          "w-[100px]",
-          "h-[100px]",
-          "bg-white",
-          "after:content-['']",
-          "after:absolute",
-          "after:inset-0",
-          "after:bg-blue-500",
-          "after:rounded-tl-full",
-          "after:w-full",
-          "after:h-full",
-          "after:clip-circle-[50%_at_0_0]"
-        )}
-      />
-      <Water />
-      <div
-        className={clsx(
-          "relative",
-          "w-[100px]",
-          "h-[100px]",
-          "bg-white",
-          "after:content-['']",
-          "after:absolute",
-          "after:inset-0",
-          "after:bg-blue-500",
-          "after:rounded-br-full",
-          "after:w-full",
-          "after:h-full",
-          "after:clip-circle-[50%_at_100%_100%]"
-        )}
-      />
-      <Space />
-      <Space />
-      <Space />
+      <WaterStraight rotate={90} />
     </>
   );
 }
@@ -61,109 +17,27 @@ interface StreamProps {
 }
 
 export function StreamBendLeft({ isDry }: StreamProps) {
+  if (isDry) {
+    return <> </>;
+  }
   return (
     <>
-      <div
-        className={clsx(
-          "relative",
-          "w-[100px]",
-          "h-[100px]",
-          "bg-white",
-          "after:content-['']",
-          "after:absolute",
-          "after:inset-0",
-          isDry ? "after:bg-yellow-500" : "after:bg-blue-500",
-          "after:rounded-tl-full",
-          "after:w-full",
-          "after:h-full",
-          "after:clip-circle-[50%_at_0_0]"
-        )}
-      />
-      {isDry ? (
-        <>
-          <Dirt />
-          <Dirt />
-          <Dirt />
-          <Dirt />
-        </>
-      ) : (
-        <>
-          <Water />
-          <Water />
-          <Water />
-          <Water />
-        </>
-      )}
-      <div
-        className={clsx(
-          "relative",
-          "w-[100px]",
-          "h-[100px]",
-          "bg-white",
-          "after:content-['']",
-          "after:absolute",
-          "after:inset-0",
-          isDry ? "after:bg-yellow-500" : "after:bg-blue-500",
-          "after:rounded-br-full",
-          "after:w-full",
-          "after:h-full",
-          "after:clip-circle-[50%_at_100%_100%]"
-        )}
-      />
+      <WaterBend rotate={180} />
+      <WaterStraight />
+      <WaterBend />
     </>
   );
 }
 
 export function StreamBendRight({ isDry }: StreamProps) {
+  if (isDry) {
+    return <> </>;
+  }
   return (
     <>
-      <div
-        className={clsx(
-          "relative",
-          "w-[100px]",
-          "h-[100px]",
-          "bg-white",
-          "after:content-['']",
-          "after:absolute",
-          "after:inset-0",
-          isDry ? "after:bg-yellow-500" : "after:bg-blue-500",
-          "after:rounded-bl-full",
-          "after:w-full",
-          "after:h-full",
-          "after:clip-circle-[50%_at_0_100%]"
-        )}
-      />
-      {isDry ? (
-        <>
-          <Dirt />
-          <Dirt />
-          <Dirt />
-          <Dirt />
-        </>
-      ) : (
-        <>
-          <Water />
-          <Water />
-          <Water />
-          <Water />
-        </>
-      )}
-      <div
-        className={clsx(
-          "relative",
-          "w-[100px]",
-          "h-[100px]",
-          "bg-white",
-          "after:content-['']",
-          "after:absolute",
-          "after:inset-0",
-          isDry ? "after:bg-yellow-500" : "after:bg-blue-500",
-          "after:rounded-tr-full",
-          "after:w-full",
-          "after:h-full",
-          "after:clip-circle-[50%_at_100%_0]"
-        )}
-      />
+      <WaterBend rotate={90} />
+      <WaterStraight />
+      <WaterBend rotate={180} flip={true} />
     </>
   );
 }
@@ -172,8 +46,41 @@ function Space() {
   return <div className={clsx("w-[100px]", "h-[100px]")}></div>;
 }
 
-function Water() {
-  return <div className={clsx("w-[100px]", "h-[100px]", "bg-blue-500")} />;
+interface OrientationProps {
+  flip?: boolean;
+  rotate?: 90 | 180;
+}
+
+function WaterStraight({ rotate }: OrientationProps) {
+  return (
+    <div className={clsx("w-[100px]", "h-[100px]")}>
+      <img
+        src={waterStraight}
+        className={clsx(
+          "w-full",
+          "h-full",
+          rotate === 90 && clsx("rotate-90", "scale-y-[-1]")
+        )}
+      />
+    </div>
+  );
+}
+
+function WaterBend({ flip, rotate }: OrientationProps) {
+  return (
+    <div className={clsx("w-[100px]", "h-[100px]")}>
+      <img
+        src={waterBend}
+        className={clsx(
+          "w-full",
+          "h-full",
+          rotate === 180 && clsx("rotate-180"),
+          rotate === 90 && clsx("rotate-90"),
+          flip && clsx("scale-x-[-1]")
+        )}
+      />
+    </div>
+  );
 }
 
 function Dirt() {
