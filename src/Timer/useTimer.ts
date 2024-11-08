@@ -22,7 +22,6 @@ export interface TimerState {
 export function useTimer(): TimerState {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [totalElapsedTime, setTotalElapsedTime] = useState(() => {
-    // Initialize elapsed time from localStorage, or start at 0 if no value is stored
     const storedElapsedTime = localStorage.getItem(TOTAL_ELAPSED_TIME_KEY);
     return storedElapsedTime ? parseInt(storedElapsedTime) : 0;
   });
@@ -31,7 +30,6 @@ export function useTimer(): TimerState {
     const lastUpdateDate = localStorage.getItem(LAST_UPDATE_DATE_KEY);
     const today = new Date().toDateString();
 
-    // Reset daily timer if the last update was on a different day
     if (lastUpdateDate !== today) {
       localStorage.setItem(LAST_UPDATE_DATE_KEY, today);
       localStorage.setItem(DAILY_ELAPSED_TIME_KEY, "0");
@@ -41,13 +39,14 @@ export function useTimer(): TimerState {
   });
 
   useEffect(() => {
-    // Load the start time from localStorage
     const storedStartTime = localStorage.getItem(TIMER_START_KEY);
     const storedElapsedTime = localStorage.getItem(TOTAL_ELAPSED_TIME_KEY);
     const storedDailyElapsedTime = localStorage.getItem(DAILY_ELAPSED_TIME_KEY);
 
     if (storedStartTime && !isRunning) {
-      const elapsed = Date.now() - parseInt(storedStartTime);
+      const elapsed = Math.floor(
+        (Date.now() - parseInt(storedStartTime)) / 1000
+      );
       setTotalElapsedTime(
         elapsed + (storedElapsedTime ? parseInt(storedElapsedTime) : 0)
       );
@@ -58,13 +57,12 @@ export function useTimer(): TimerState {
       setIsRunning(true);
     }
 
-    // Interval to update elapsed time
     let interval: number | undefined;
     if (isRunning) {
       interval = setInterval(() => {
         const start = localStorage.getItem(TIMER_START_KEY);
         if (start) {
-          const newElapsed = Date.now() - parseInt(start);
+          const newElapsed = Math.floor((Date.now() - parseInt(start)) / 1000);
           setTotalElapsedTime(
             newElapsed + (storedElapsedTime ? parseInt(storedElapsedTime) : 0)
           );
@@ -113,21 +111,17 @@ export function useTimer(): TimerState {
     unit: "hours" | "minutes",
     value: number
   ) {
-    // Convert hours or minutes to milliseconds
-    const multiplier = unit === "hours" ? 60 * 60 * 1000 : 60 * 1000;
+    const multiplier = unit === "hours" ? 60 * 60 : 60;
     const adjustedValue = value * multiplier;
-
     if (type === "daily") {
-      const updatedDailyElapsedTime =
-        adjustedValue + (dailyElapsedTime % multiplier);
+      const updatedDailyElapsedTime = adjustedValue + dailyElapsedTime;
       setDailyElapsedTime(updatedDailyElapsedTime);
       localStorage.setItem(
         DAILY_ELAPSED_TIME_KEY,
         updatedDailyElapsedTime.toString()
       );
     } else {
-      const updatedTotalElapsedTime =
-        adjustedValue + (totalElapsedTime % multiplier);
+      const updatedTotalElapsedTime = adjustedValue + totalElapsedTime;
       setTotalElapsedTime(updatedTotalElapsedTime);
       localStorage.setItem(
         TOTAL_ELAPSED_TIME_KEY,
