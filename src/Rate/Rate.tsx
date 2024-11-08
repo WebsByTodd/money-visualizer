@@ -10,7 +10,7 @@ export function Rate({ rate, updateRate }: RateState) {
   }
 
   return (
-    <div className={clsx("absolute", "top-0", "right-0", "p-2")}>
+    <div className={clsx("p-2")}>
       <label>
         Current rate: $
         <input

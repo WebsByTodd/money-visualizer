@@ -1,3 +1,4 @@
+import clsx from "clsx/lite";
 import { MilestoneList } from "./Milestones/MilestoneList";
 import { useMilestones } from "./Milestones/useMilestones";
 import { Rate } from "./Rate/Rate";
@@ -14,11 +15,15 @@ function App() {
   });
 
   return (
-    <>
-      <MilestoneList {...milestoneState} />
-      <Rate {...rateState} />
-      <Timer {...timerState} />
-    </>
+    <div className={clsx("flex", "justify-around")}>
+      <div>
+        <MilestoneList {...milestoneState} />
+      </div>
+      <div>
+        <Rate {...rateState} />
+        <Timer {...timerState} />
+      </div>
+    </div>
   );
 }
 
